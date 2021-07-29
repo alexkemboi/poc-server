@@ -1,0 +1,25 @@
+{
+    "name": "myproject",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+
+    },
+    "keywords": [
+        "node",
+        "restful"
+    ],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "@hapi/hapi": "^20.1.5",
+        "hapi-auth-jwt": "^4.0.0",
+        "jsonwebtoken": "^8.5.1",
+        "knex": "^0.95.8",
+        "mysql": "^2.18.1",
+        "mysql2": "^2.2.5"
+    },
+    "devDependencies": {}
+}
