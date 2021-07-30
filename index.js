@@ -25,7 +25,10 @@ const init = async() => {
         handler: function(request, h) {
 
             return new Promise((resolve, reject) => {
-                connection.query('SELECT * FROM patients', function(error, results, fields) {
+                connection.query(`SELECT patients.name as pname,patients.patientId,patients.gender,patients.phone_number,patients.dob,patients.age,
+                encounters.hiv_status,encounters.encounter_datetime,
+                locations.name as lname FROM patients join encounters  on (patients.patientId = encounters.patientId) 
+                join locations  on (encounters.location_id=locations.id)`, function(error, results, fields) {
                     if (error) throw error;
                     console.log(results);
                     resolve(results);
@@ -43,8 +46,10 @@ const init = async() => {
         handler: function(request, h) {
             const names = request.query.name;
             return new Promise((resolve, reject) => {
-                connection.query(`SELECT P.name,P.patientId,P.gender,P.phone_number,DATE_FORMAT(P.dob,"%Y-%m-%d") as dob,
-                 E.hiv_status FROM patients P join encounters E on (P.patientId = E.patientId) WHERE name LIKE '${names}%'`, function(error, results, fields) {
+                connection.query(`SELECT patients.name  as pname,patients.patientId,patients.gender,patients.phone_number,patients.dob,patients.age,
+                encounters.hiv_status,encounters.encounter_datetime,
+                locations.name as lname FROM patients join encounters  on (patients.patientId = encounters.patientId) 
+                join locations  on (encounters.location_id=locations.id) WHERE patients.name LIKE '%${names}%'`, function(error, results, fields) {
                     if (error) throw error;
                     console.log(results);
                     resolve(results);
@@ -108,13 +113,14 @@ const init = async() => {
         method: 'GET',
         path: '/patientlistreport',
         handler: function(request, h) {
+            const months = request.query.months;
             const patientstatus = request.query.patientstatus;
             return new Promise((resolve, reject) => {
-                connection.query(`SELECT patients.name,patients.patientId,patients.gender,patients.phone_number,patients.dob,
+                connection.query(`SELECT patients.name as pname,patients.patientId,patients.gender,patients.phone_number,patients.dob,
                 encounters.hiv_status,encounters.encounter_datetime,
                 locations.name FROM patients join encounters  on (patients.patientId = encounters.patientId) 
                 join locations  on (encounters.location_id=locations.id) 
-                WHERE hiv_status LIKE "${patientstatus}"`,
+                WHERE hiv_status LIKE "${patientstatus}" AND  date_format(encounters.encounter_datetime,"%Y-%m")LIKE "${months}"`,
                     function(error, results, fields) {
                         if (error) throw error;
                         console.log(results);
